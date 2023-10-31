@@ -1,51 +1,50 @@
 #include <iostream>
 #include "./math_operations.h"
+#include <string>
+#include <fstream>
 
 using namespace std;
 
 int main() {
+    string username, password;
     int choice;
-    double num1, num2;
 
     while (true) {
-        cout << "Menu: " << endl;
-        cout << "1. Add" << endl;
-        cout << "2. Subtract" << endl;
-        cout << "3. Multiply" << endl;
-        cout << "4. Divide" << endl;
-        cout << "5. Exit" << endl;
-        cout << "Enter your choice (1-5): ";
+        cout << "1. Login " << endl;
+        cout << "2. Sign up" << endl;
+        cout<< "3. Exit" << endl;
+        cout << "Enter your choice (1-3): ";
         cin >> choice;
 
-        if (choice == 5) {
+        if (choice == 3) {
             cout << "Exiting the program. Goodbye!" << endl;
             break;
         }
 
-        cout << "Enter two numbers: ";
-        cin >> num1 >> num2;
-
-        double result;
-
         switch (choice) {
-            case 1:
-                result = add(num1, num2);
+            case 1: {
+                string temp_username;
+                cout << "Enter your username: ";
+                cin >> temp_username;
+                username = temp_username;
                 break;
-            case 2:
-                result = subtract(num1, num2);
+            }
+            case 2: {
+                ifstream inputFile("usernames.txt");
+                if (!inputFile.is_open()) {
+                    std::cerr << "Error opening the file." << std::endl;
+                    return 1;
+                }
+                string fileContents((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+                inputFile.close();
+                std::cout << "File Contents: " << std::endl;
+                std::cout << fileContents << std::endl;
                 break;
-            case 3:
-                result = multiply(num1, num2);
-                break;
-            case 4:
-                result = divide(num1, num2);
-                break;
+            }
             default:
                 cout << "Invalid choice. Please enter a valid option (1-5)." << endl;
                 continue;
         }
-
-        cout << "Result: " << result << endl;
     }
 
     return 0;
