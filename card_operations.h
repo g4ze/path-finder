@@ -1,5 +1,5 @@
-#ifndef MATH_OPERATIONS_H
-#define MATH_OPERATIONS_H
+#ifndef CARD_OPERATIONS_H
+#define CARD_OPERATIONS_H
 
 double add(double num1, double num2);
 double subtract(double num1, double num2);

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./math_operations.h"
+#include "./card_operations.h"
 #include <string>
 #include <fstream>
 #include <vector>
@@ -10,7 +10,7 @@ using namespace std;
 void userLogin(string username) {
     int choice;
     while (true) {
-        cout<<"Welcoime to the metro path finder"<<endl;
+        cout<<"Welcome to the metro path finder"<<endl;
         cout << "\n***** Metro Rail Route Finder *****\n";
         cout << "1. Find Shortest Path\n";
         cout << "2. Find Most Economical Path\n";
@@ -105,7 +105,7 @@ int main() {
                 if (found) {
                     std::cout << "Login successful!" << std::endl;
                     cout<<"Welcome "<<username<<"!"<<endl;
-                    cout<<"press 0 to logout at any point" << endl;
+                    cout<<"Press 0 to logout at any point" << endl;
                     userLogin(username);
                 } else {
                     std::cout << "Invalid username or password." << std::endl;
@@ -121,14 +121,14 @@ int main() {
                 cin >> newUsername;
                 cout << "Enter new password: ";
                 cin >> newPassword;
-                //conatinating all the user info for easy insertion and comparison
+                //concatinating all the user info for easy insertion and comparison
                 string info= newUsername + " " + newPassword;
                 ifstream inputFile("./usernames.txt");
                 if (!inputFile.is_open()) {
                     std::cerr << "Error opening the file." << std::endl;
                     return 1;
                 }
-                //extrcating all the users info from the file
+                //extracting all the users info from the file
                 vector<std::string> usernames;
                 string line;
                 while (std::getline(inputFile, line)) {
