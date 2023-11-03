@@ -5,6 +5,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include "graph_operations.h"
 
 // Define a structure to store location information
 struct LocationInfo {
@@ -49,6 +50,8 @@ void VillageMap::displayMap() {
     // Create a new graph context
     Agraph_t* G = agopen("G", Agstrictdirected, nullptr);
 
+    
+
     // Add nodes to the graph
     std::map<std::string, Agnode_t*> nodeMap;
     for (const auto& entry : mapGraph) {
@@ -85,7 +88,7 @@ void VillageMap::displayMap() {
     std::cout << "Graph visualization created successfully." << std::endl;
 }
 
-int main() {
+void loadGraph() {
     // Create a village map
     VillageMap village;
 
@@ -208,5 +211,5 @@ int main() {
     // Display the village map graphically
     village.displayMap();
 
-    return 0;
+    std::cout << "Graph loaded successfully." << std::endl;
 }

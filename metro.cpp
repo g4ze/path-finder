@@ -1,5 +1,6 @@
 #include <iostream>
 #include "./card_operations.h"
+#include "graph_operations.h"
 #include <string>
 #include <fstream>
 #include <vector>
@@ -26,10 +27,10 @@ void userLogin(string username) {
         {
         case 1:
             cout << "Enter Source and Destination Stations: ";
-            
+            loadGraph();
             break;
         case 2:
-            cout << "Enter Source and Destination Stations: ";
+            loadGraph();
             
             break;
         case 3:
