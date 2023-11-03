@@ -7,3 +7,98 @@ nilay 123
 sehaj 123
 shubh 123
 sonali 567
+
+
+#include <iostream>
+#include <graphviz/gvc.h>
+
+// Define a structure to store location information
+struct LocationInfo {
+    std::string location;
+    double distance;
+
+    LocationInfo(const std::string& loc, double dist = 500.0) : location(loc), distance(dist) {}
+};
+
+// Define a graph as an adjacency list
+class VillageMap {
+public:
+    VillageMap();
+    void addLocation(const std::string& location);
+    void addPath(const std::string& location1, const std::string& location2);
+    void displayMap();
+    
+private:
+    std::map<std::string, std::vector<LocationInfo>> mapGraph;
+};
+
+// Constructor: Initialize the village map
+VillageMap::VillageMap() {
+    mapGraph.clear();
+}
+
+// Add a location to the map
+void VillageMap::addLocation(const std::string& location) {
+    if (mapGraph.find(location) == mapGraph.end()) {
+        mapGraph[location] = std::vector<LocationInfo>();
+    }
+}
+
+// Add a path/connection between two locations with a default distance of 500 meters
+void VillageMap::addPath(const std::string& location1, const std::string& location2) {
+    mapGraph[location1].push_back(LocationInfo(location2));
+    mapGraph[location2].push_back(LocationInfo(location1));
+}
+
+// Display the village map graphically using Graphviz
+void VillageMap::displayMap() {
+    // Create a new graph context
+    Agraph_t* G = agopen("G", Agstrictdirected, nullptr);
+
+    // Add nodes to the graph
+    std::map<std::string, Agnode_t*> nodeMap;
+    for (const auto& entry : mapGraph) {
+        const std::string& location = entry.first;
+        Agnode_t* node = agnode(G, (char*)location.c_str(), 1);
+        nodeMap[location] = node;
+    }
+
+    // Add edges to the graph
+    for (const auto& entry : mapGraph) {
+        const std::string& location1 = entry.first;
+        Agnode_t* node1 = nodeMap[location1];
+
+        for (const LocationInfo& info : entry.second) {
+            const std::string& location2 = info.location;
+            Agedge_t* edge = agedge(G, node1, nodeMap[location2], nullptr, 1);
+        }
+    }
+
+    // Initialize the Graphviz context
+    GVC_t* gvc = gvContext();
+
+    // Layout the graph
+    gvLayout(gvc, G, "dot");
+
+    // Render the graph to a file (e.g., PNG)
+    gvRenderFilename(gvc, G, "png", "village_map.png");
+
+    // Free resources
+    gvFreeLayout(gvc, G);
+    agclose(G);
+    gvFreeContext(gvc);
+
+    std::cout << "Graph visualization created successfully." << std::endl;
+}
+
+int main() {
+    // Create a village map
+    VillageMap village;
+
+    // Add locations and paths as before
+
+    // Display the village map graphically
+    village.displayMap();
+
+    return 0;
+}

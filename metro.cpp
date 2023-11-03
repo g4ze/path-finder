@@ -34,7 +34,7 @@ void userLogin(string username) {
             break;
         case 3:
             cout << "Enter Amount to Recharge: ";
-
+            recharge(username);
             break;
         case 4:
             
@@ -181,6 +181,5 @@ int main() {
                 continue;
         }
     }
-
     return 0;
 }
