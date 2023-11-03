@@ -1,7 +1,6 @@
 
 #include <graphviz/gvc.h>
 #include <cmath>
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <map>
 #include <vector>
