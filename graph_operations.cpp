@@ -136,6 +136,7 @@ void loadGraph() {
     village.addLocation("Dwarka Sector 9");
     village.addLocation("Dwarka Sector 8");
     village.addLocation("Dwarka Sector 21");
+    village.addLocation("Nilay's station");
 
     // Add paths between locations with a default distance of 500 meters
     // Chain-like connections
