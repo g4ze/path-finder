@@ -5,6 +5,9 @@
 #include <map>
 #include <vector>
 #include "graph_operations.h"
+#include <queue>
+#include <unordered_map>
+#include <stack> 
 
 // Define a structure to store location information
 struct LocationInfo {
@@ -21,9 +24,9 @@ public:
     void addLocation(const std::string& location);
     void addPath(const std::string& location1, const std::string& location2);
     void displayMap();
-    
-private:
+    std::vector<std::string> findShortestPath(const std::string& source, const std::string& destination);
     std::map<std::string, std::vector<LocationInfo>> mapGraph;
+    void displayPath(const std::vector<std::string>& shortestPath);
 };
 
 // Constructor: Initialize the village map
@@ -87,6 +90,118 @@ void VillageMap::displayMap() {
     std::cout << "Graph visualization created successfully." << std::endl;
 }
 
+// Add a new method in the VillageMap class to find the shortest path
+std::vector<std::string> VillageMap::findShortestPath(const std::string& source, const std::string& destination) {
+    std::unordered_map<std::string, double> distance;
+    std::unordered_map<std::string, std::string> previous;
+    std::priority_queue<std::pair<double, std::string>, std::vector<std::pair<double, std::string>>, std::greater<std::pair<double, std::string>>> pq;
+
+    // Initialize distances to all nodes as infinity
+    for (const auto& entry : mapGraph) {
+        distance[entry.first] = std::numeric_limits<double>::max();
+    }
+
+    // The distance from the source to itself is 0
+    distance[source] = 0.0;
+    pq.push({0.0, source});
+
+    while (!pq.empty()) {
+        double dist = pq.top().first;
+        std::string current = pq.top().second;
+        pq.pop();
+
+        if (dist > distance[current]) {
+            continue;
+        }
+
+        for (const LocationInfo& neighbor : mapGraph[current]) {
+            double newDist = dist + neighbor.distance;
+            if (newDist < distance[neighbor.location]) {
+                distance[neighbor.location] = newDist;
+                previous[neighbor.location] = current;
+                pq.push({newDist, neighbor.location});
+            }
+        }
+    }
+
+    // Reconstruct the path
+    std::vector<std::string> path;
+std::string current = destination;
+
+std::stack<std::string> reversedPath; // Create a stack to reverse the path
+
+while (current != source) {
+    reversedPath.push(current);
+    current = previous[current];
+}
+
+reversedPath.push(source); // Add the source to the stack
+
+// Transfer the reversed path to the vector
+while (!reversedPath.empty()) {
+    path.push_back(reversedPath.top());
+    reversedPath.pop();
+}
+
+return path;
+}
+
+
+
+// Modify the displayMap method to highlight the nodes and edges in the shortest path
+void VillageMap::displayPath(const std::vector<std::string>& shortestPath) {
+    GVC_t* gvc = gvContext();
+    Agraph_t* g = agopen("G", Agdirected, nullptr);
+
+    // Add nodes to the graph
+    for (const auto& [location, _] : mapGraph) {
+        Agnode_t* node = agnode(g, const_cast<char*>(location.c_str()), true);
+        agsafeset(node, const_cast<char*>("label"), const_cast<char*>(location.c_str()), const_cast<char*>(""));
+    }
+
+    // Add edges to the graph
+    for (const auto& [location, connections] : mapGraph) {
+        for (const auto& connection : connections) {
+            Agnode_t* node1 = agnode(g, const_cast<char*>(location.c_str()), false);
+            Agnode_t* node2 = agnode(g, const_cast<char*>(connection.location.c_str()), false);
+            agedge(g, node1, node2, nullptr, true);
+        }
+    }
+
+    // Highlight the nodes and edges in the shortest path
+    for (size_t i = 0; i < shortestPath.size() - 1; i++) {
+        Agnode_t* node1 = agnode(g, const_cast<char*>(shortestPath[i].c_str()), false);
+        Agnode_t* node2 = agnode(g, const_cast<char*>(shortestPath[i + 1].c_str()), false);
+        Agedge_t* edge = agedge(g, node1, node2, nullptr, false);
+        agsafeset(edge, const_cast<char*>("color"), const_cast<char*>("red"), const_cast<char*>(""));
+        agsafeset(node1, const_cast<char*>("color"), const_cast<char*>("red"), const_cast<char*>(""));
+        agsafeset(node2, const_cast<char*>("color"), const_cast<char*>("red"), const_cast<char*>(""));
+    }
+
+    // Render the graph using Graphviz
+    gvLayout(gvc, g, "dot");
+    gvRenderFilename(gvc, g, "png", "shortest_path.png");
+    gvFreeLayout(gvc, g);
+    agclose(g);
+    gvFreeContext(gvc);
+}
+
+// Search for and display the shortest path between source and destination
+void searchAndDisplayShortestPath(VillageMap& village, const std::string& source, const std::string& destination) {
+    std::vector<std::string> shortestPath = village.findShortestPath(source, destination);
+
+    std::cout << "Shortest Path from " << source << " to " << destination << ":" << std::endl;
+    for (const std::string& location : shortestPath) {
+        std::cout << location;
+        if (location != destination) {
+            std::cout << " -> ";
+        }
+    }
+    std::cout << std::endl;
+    village.displayPath(shortestPath);
+}
+
+
 void loadGraph() {
     // Create a village map
     VillageMap village;
@@ -136,8 +251,6 @@ void loadGraph() {
     village.addLocation("Dwarka Sector 9");
     village.addLocation("Dwarka Sector 8");
     village.addLocation("Dwarka Sector 21");
-    village.addLocation("Nilay's station");
-
     // Add paths between locations with a default distance of 500 meters
     // Chain-like connections
     village.addPath("Noida City Centre", "Noida Golf Course");
@@ -211,5 +324,20 @@ void loadGraph() {
     // Display the village map graphically
     village.displayMap();
 
-    std::cout << "Graph loaded successfully." << std::endl;
+    std::cout << "Graph loaded successfully in village_map.png" << std::endl;
+
+ 
+    // ... (Rest of the main function as before)
+
+    // Example: Find and display the shortest path between two locations
+
+    std::string source, destination;
+    std::cout<<"Enter the source stations: ";
+    std::cin>>source;
+    std::cout<<"Enter the destination stations: ";
+    std::cin>>destination;
+    searchAndDisplayShortestPath(village, source, destination);
+    
+    std::cout<<"done!!";
 }
+
