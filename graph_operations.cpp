@@ -331,12 +331,12 @@ void loadGraph() {
 
     // Example: Find and display the shortest path between two locations
 
-    std::string source, destination;
-    std::cout<<"Enter the source stations: ";
-    std::cin>>source;
-    std::cout<<"Enter the destination stations: ";
-    std::cin>>destination;
-    searchAndDisplayShortestPath(village, source, destination);
+    // std::string source, destination;
+    // std::cout<<"Enter the source stations: ";
+    // std::cin>>source;
+    // std::cout<<"Enter the destination stations: ";
+    // std::cin>>destination;
+    searchAndDisplayShortestPath(village, "Noida City Centre", "Noida Sector 18");
     
     std::cout<<"done!!";
 }
