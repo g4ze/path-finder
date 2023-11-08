@@ -6,7 +6,7 @@ using namespace std;
 
 
 void recharge(string username) {
-    double cid=123432; double amt, amount=345, x;
+    double cid=123432; double amt, amount=345;
     int choice;
     
     do {

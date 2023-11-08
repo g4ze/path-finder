@@ -26,19 +26,19 @@ void userLogin(string username) {
         switch (choice)
         {
         case 1:
-            cout << "Enter Source and Destination Stations: ";
-            loadGraph();
+            loadGraph1();
             break;
+        // case 2:
+        //     loadGraph();
+            
+            // break;
         case 2:
-            loadGraph();
-            
+            loadGraph2();
             break;
+            
         case 3:
-            cout << "Enter Amount to Recharge: ";
+            cout << "";
             recharge(username);
-            break;
-        case 4:
-            
             break;
         default:
             cout << "Invalid choice! Please enter a valid option." << endl;
